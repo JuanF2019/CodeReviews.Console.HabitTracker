@@ -8,18 +8,19 @@ namespace HabitTracker.Repositories
     internal sealed class HabitRepository
     {
         private const string ConnectionStringPath = "Databases:Habits:ConnectionString";        
-        public static IConfiguration Configuration
+        public static IConfiguration? Configuration
         { 
             get;
-            set {
+            set
+            {
                 if(_instance != null)
                 {
                     throw new InvalidOperationException("Cannot change the configuration since the repository has already been initialized.");
                 }
-                Configuration = value;
+                field = value;
             }
         }
-        private static HabitRepository _instance;
+        private static HabitRepository? _instance;
 
         private readonly SqliteHelper _sqliteHelper;
 
@@ -72,7 +73,7 @@ namespace HabitTracker.Repositories
             using SqliteCommand command = _sqliteHelper.CreateCommandWithNewConnection(insertQuery);
 
             command.Parameters.AddWithValue("@name", habit.Name);
-            command.Parameters.AddWithValue("@description", habit.Description);
+            command.Parameters.AddWithValue("@description", habit.Description == null? DBNull.Value:habit.Description);
 
             SqliteDataReader reader = command.ExecuteReader();
 
@@ -141,7 +142,7 @@ namespace HabitTracker.Repositories
 
             command.Parameters.AddWithValue("@id", habit.ID);
             command.Parameters.AddWithValue("@name", habit.Name);
-            command.Parameters.AddWithValue("@description", habit.Description);            
+            command.Parameters.AddWithValue("@description", habit.Description == null ? DBNull.Value:habit.Description);            
 
             int numberOfUpdatedRecords = command.ExecuteNonQuery();
 

@@ -10,7 +10,7 @@ namespace HabitTracker.Model
         public Habit Habit { get; set; } = habit;
         public override string ToString()
         {
-            return $"ID = {ID} ; OccurredAt = {OccurredAt} ; Notes = {Notes} ; Habit ID = {Habit}";
+            return $"ID = {ID} ; OccurredAt = {OccurredAt} ; Notes = {Notes} ; Habit = {{{Habit}}}";
         }
     }
 }

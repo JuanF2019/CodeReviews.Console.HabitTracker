@@ -42,15 +42,15 @@ namespace HabitTracker.Repositories
 
         public HabitOccurrence CreateHabitOccurrence(HabitOccurrence habitOccurrence)
         {
-            string insertQuery = "INSERT INTO habitsOccurrences (ocurredAt, notes, habitId) VALUES (" +
-                "@ocurredAt, @notes, @habitId) RETURNING *;";
+            string insertQuery = "INSERT INTO habitsOccurrences (occurredAt, notes, habitId) VALUES (" +
+                "@occurredAt, @notes, @habitId) RETURNING *;";
 
             using SqliteConnection connection = _sqliteHelper.CreateAndOpenNewConnection();
 
             using SqliteCommand insertCommand = new SqliteCommand(insertQuery, connection);
 
             insertCommand.Parameters.AddWithValue("@occurredAt", habitOccurrence.OccurredAt);
-            insertCommand.Parameters.AddWithValue("@notes", habitOccurrence.Notes);
+            insertCommand.Parameters.AddWithValue("@notes", habitOccurrence.Notes == null ? DBNull.Value : habitOccurrence.Notes);
             insertCommand.Parameters.AddWithValue("@habitId", habitOccurrence.Habit.ID);
 
             SqliteDataReader insertReader = insertCommand.ExecuteReader();
@@ -63,7 +63,7 @@ namespace HabitTracker.Repositories
             insertReader.Read();
 
             int id = Convert.ToInt32(insertReader["id"]);
-            DateTime occurredAt = Convert.ToDateTime(insertReader["ocurredAt"]);
+            DateTime occurredAt = Convert.ToDateTime(insertReader["occurredAt"]);
             string? notes = Convert.ToString(insertReader["notes"]);
 
             int habitId = Convert.ToInt32(insertReader["habitId"]);
@@ -111,7 +111,7 @@ namespace HabitTracker.Repositories
 
             reader.Read();
 
-            DateTime occurredAt = Convert.ToDateTime(reader["ocurredAt"]);
+            DateTime occurredAt = Convert.ToDateTime(reader["occurredAt"]);
             string? notes = Convert.ToString(reader["notes"]);
 
             int habitId = Convert.ToInt32(reader["habitId"]);
@@ -122,12 +122,12 @@ namespace HabitTracker.Repositories
 
         public void UpdateHabitOccurrence(HabitOccurrence habitOccurrence)
         {
-            string updateQuery = "UPDATE habitsOccurrences SET ocurredAt = @ocurredAt, notes = @notes, habitId = @habitId WHERE id = @id;";
+            string updateQuery = "UPDATE habitsOccurrences SET occurredAt = @occurredAt, notes = @notes, habitId = @habitId WHERE id = @id;";
 
             using SqliteCommand command = _sqliteHelper.CreateCommandWithNewConnection(updateQuery);
 
             command.Parameters.AddWithValue("@occurredAt", habitOccurrence.OccurredAt);
-            command.Parameters.AddWithValue("@notes", habitOccurrence.Notes);
+            command.Parameters.AddWithValue("@notes", habitOccurrence.Notes == null ? DBNull.Value : habitOccurrence.Notes);
             command.Parameters.AddWithValue("@habitId", habitOccurrence.Habit.ID);
 
             int numberOfUpdatedRecords = command.ExecuteNonQuery();
