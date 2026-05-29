@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace HabitTracker.Model
+﻿namespace HabitTracker.Model
 {
     internal class HabitOccurrence (int id, DateTime occurredAt, string? notes, Habit habit)
     {
