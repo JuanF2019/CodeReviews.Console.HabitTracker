@@ -179,5 +179,18 @@ namespace HabitTracker.Repositories
                 throw new Exception($"No habit occurrence found that has the given id. (id = {id})");
             }
         }
+
+        public void DeleteHabitOccurrencesByRelatedHabitId(int habitId)
+        {
+            string deleteQuery = "DELETE FROM habitsOccurrences WHERE habitId = @habitId";
+
+            using SqliteCommand command = _sqliteHelper.CreateCommandWithNewConnection(deleteQuery);
+
+            command.Parameters.AddWithValue("@habitId", habitId);
+
+            command.ExecuteNonQuery();
+        }
+
+
     }
 }

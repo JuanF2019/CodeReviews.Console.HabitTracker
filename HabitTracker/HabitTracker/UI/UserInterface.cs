@@ -260,6 +260,7 @@ namespace HabitTracker.UI
         {
             try
             {
+                HabitOccurrenceRepository.GetInstance().DeleteHabitOccurrencesByRelatedHabitId(habitToDelete.ID);
                 HabitRepository.GetInstance().DeleteHabitById(habitToDelete.ID);
                 Console.WriteLine("Habit deleted succesfully");
             }
@@ -305,6 +306,7 @@ namespace HabitTracker.UI
                                 break;
                             case "r":
                                 validInputAction = true;
+                                Console.WriteLine("Removing a habit will also delete the related habit occurrences");
                                 Habit habitToDelete = PickAHabit(habits);
                                 RemoveHabit(habitToDelete);
                                 PressEnterToContinue();
@@ -549,62 +551,62 @@ namespace HabitTracker.UI
                 if (habitOccurrences.Count > 0)
                 {
                     Console.WriteLine("Select an action (c : create ; e : edit ; r : remove ; b : go back to main menu):");
-
-                    bool validInputAction = false;
-                    bool atLeastOneInvalidInput = false;
-
-                    do
-                    {
-                        string? userInput = Console.ReadLine();
-                        string processedUserInput = userInput == null ? "" : userInput.ToLower();
-
-                        switch (processedUserInput)
-                        {
-                            case "c":
-                                validInputAction = true;
-                                Console.Clear();
-                                Console.WriteLine("Create Habit Occurrence");
-                                Console.WriteLine("EXISTING HABITS:");
-                                List<Habit> habits = HabitRepository.GetInstance().GetAllHabits();
-                                PrintHabits(habits);
-                                Habit selectedHabit = PickAHabit(habits);
-                                CreateHabitOccurrence(selectedHabit);
-                                break;
-                            case "e":
-                                validInputAction = true;
-                                HabitOccurrence habitOccurrenceToEdit = PickAHabitOccurrence(habitOccurrences);
-                                EditHabitOccurrence(habitOccurrenceToEdit);
-                                PressEnterToContinue();
-                                break;
-                            case "r":
-                                validInputAction = true;
-                                HabitOccurrence habitOccurrenceToDelete = PickAHabitOccurrence(habitOccurrences);
-                                RemoveHabitOccurrence(habitOccurrenceToDelete);
-                                PressEnterToContinue();
-                                break;
-                            case "b":
-                                validInputAction = true;
-                                goBack = true;
-                                break;
-                            default:
-                                if (!atLeastOneInvalidInput)
-                                {
-                                    Console.WriteLine("Invalid input, please try again:");
-                                    atLeastOneInvalidInput = true;
-                                }
-                                else
-                                {
-                                    Console.SetCursorPosition(0, Console.CursorTop - 1);
-                                    ClearCurrentLine();
-                                }
-                                break;
-                        }
-                    } while (!validInputAction);
                 }
                 else
                 {
-                    goBack = true;
+                    Console.WriteLine("Select an action (c : create ; b : go back to main menu):");
                 }
+                bool validInputAction = false;
+                bool atLeastOneInvalidInput = false;
+
+                do
+                {
+                    string? userInput = Console.ReadLine();
+                    string processedUserInput = userInput == null ? "" : userInput.ToLower();
+
+                    switch (processedUserInput)
+                    {
+                        case "c":
+                            validInputAction = true;
+                            Console.Clear();
+                            Console.WriteLine("Create Habit Occurrence");
+                            Console.WriteLine("EXISTING HABITS:");
+                            List<Habit> habits = HabitRepository.GetInstance().GetAllHabits();
+                            PrintHabits(habits);
+                            Habit selectedHabit = PickAHabit(habits);
+                            CreateHabitOccurrence(selectedHabit);
+                            break;
+                        case "e" when habitOccurrences.Count > 0:
+                            validInputAction = true;
+                            HabitOccurrence habitOccurrenceToEdit = PickAHabitOccurrence(habitOccurrences);
+                            EditHabitOccurrence(habitOccurrenceToEdit);
+                            PressEnterToContinue();
+                            break;
+                        case "r" when habitOccurrences.Count > 0:
+                            validInputAction = true;
+                            HabitOccurrence habitOccurrenceToDelete = PickAHabitOccurrence(habitOccurrences);
+                            RemoveHabitOccurrence(habitOccurrenceToDelete);
+                            PressEnterToContinue();
+                            break;
+                        case "b":
+                            validInputAction = true;
+                            goBack = true;
+                            break;
+                        default:
+                            if (!atLeastOneInvalidInput)
+                            {
+                                Console.WriteLine("Invalid input, please try again:");
+                                atLeastOneInvalidInput = true;
+                            }
+                            else
+                            {
+                                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                                ClearCurrentLine();
+                            }
+                            break;
+                    }
+                } while (!validInputAction);
+
             }
         }
     }
