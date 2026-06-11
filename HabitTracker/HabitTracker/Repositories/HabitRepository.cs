@@ -1,5 +1,5 @@
 ﻿using HabitTracker.Model;
-using HabitTracker.SqliteHelpers;
+using HabitTracker.Helpers;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
@@ -7,7 +7,9 @@ namespace HabitTracker.Repositories
 {
     internal sealed class HabitRepository
     {
-        private const string ConnectionStringPath = "Databases:Habits:ConnectionString";        
+        private const string ConnectionStringPath = "Databases:Habits:ConnectionString";
+        private static HabitRepository? _instance;
+        private readonly SqliteHelper _sqliteHelper;
         public static IConfiguration? Configuration
         { 
             get;
@@ -20,9 +22,6 @@ namespace HabitTracker.Repositories
                 field = value;
             }
         }
-        private static HabitRepository? _instance;
-
-        private readonly SqliteHelper _sqliteHelper;
 
         public static HabitRepository GetInstance()
         {

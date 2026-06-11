@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 
-namespace HabitTracker.SqliteHelpers
+namespace HabitTracker.Helpers
 {
     internal class SqliteHelper (string connectionString)
     {

@@ -1,17 +1,42 @@
 ﻿using HabitTracker.Model;
-using HabitTracker.SqliteHelpers;
+using HabitTracker.Helpers;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
 namespace HabitTracker.Repositories
 {
-    internal class HabitOccurrenceRespository
+    internal class HabitOccurrenceRepository
     {
         private const string ConnectionStringPath = "Databases:Habits:ConnectionString";
+        private static HabitOccurrenceRepository? _instance;
         private readonly SqliteHelper _sqliteHelper;
         private readonly HabitRepository _habitRepository = HabitRepository.GetInstance();
+        public static IConfiguration? Configuration
+        {
+            get;
+            set
+            {
+                if (_instance != null)
+                {
+                    throw new InvalidOperationException("Cannot change the configuration since the repository has already been initialized.");
+                }
+                field = value;
+            }
+        }
+        public static HabitOccurrenceRepository GetInstance()
+        {
+            if (_instance == null)
+            {
+                if (Configuration == null)
+                {
+                    throw new InvalidOperationException("Cannot create an instance since no configuration has been set for the repository.");
+                }
+                _instance = new HabitOccurrenceRepository(Configuration);
+            }
+            return _instance;
+        }
 
-        public HabitOccurrenceRespository(IConfiguration configuration)
+        private HabitOccurrenceRepository(IConfiguration configuration)
         {
             string connectionString = configuration[ConnectionStringPath] ?? throw new Exception($"Connection string not found at path: '{ConnectionStringPath}'");
 
@@ -72,7 +97,7 @@ namespace HabitTracker.Repositories
             return new HabitOccurrence(id, occurredAt, notes, relatedHabit);
         }
 
-        public List<HabitOccurrence> GetAllHabits()
+        public List<HabitOccurrence> GetAllHabitOccurrences()
         {
             string selectQuery = "SELECT * FROM habitsOccurrences;";
 
@@ -84,7 +109,7 @@ namespace HabitTracker.Repositories
             while (reader.Read())
             {
                 int id = Convert.ToInt32(reader["id"]);
-                DateTime occurredAt = Convert.ToDateTime(reader["ocurredAt"]);
+                DateTime occurredAt = Convert.ToDateTime(reader["occurredAt"]);
                 string? notes = Convert.ToString(reader["notes"]);
 
                 int habitId = Convert.ToInt32(reader["habitId"]);
@@ -126,6 +151,7 @@ namespace HabitTracker.Repositories
 
             using SqliteCommand command = _sqliteHelper.CreateCommandWithNewConnection(updateQuery);
 
+            command.Parameters.AddWithValue("@id", habitOccurrence.ID);
             command.Parameters.AddWithValue("@occurredAt", habitOccurrence.OccurredAt);
             command.Parameters.AddWithValue("@notes", habitOccurrence.Notes == null ? DBNull.Value : habitOccurrence.Notes);
             command.Parameters.AddWithValue("@habitId", habitOccurrence.Habit.ID);
