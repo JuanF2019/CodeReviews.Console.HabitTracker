@@ -6,11 +6,7 @@ This project is a small console application that helps in managing habits and ha
 
 ## How it works?
 
-Internally upon opening the app a small SQlite database is created with two tables
-- `habits` which holds basic information about habits (id, name, description)
-- `habitsOccurrences` which holds information about when an habit was achieved (id, habitId, occurredAt, notes)
-
-Then, a menu is displayed giving the user 3 options  
+Upon opening the app is displayed giving the user 3 options  
 
   <img width="195" height="71" alt="image" src="https://github.com/user-attachments/assets/39ccb623-7740-4987-871b-003c93f7f565" />  
 
@@ -47,4 +43,19 @@ Then, a menu is displayed giving the user 3 options
       - Remove
         - <img width="734" height="185" alt="image" src="https://github.com/user-attachments/assets/5cca8000-c471-4768-a433-3f652150e383" />
 
+## How data is managed?
 
+Internally upon opening the app a small SQlite database is created with two tables
+- `habits` which holds basic information about habits (id, name, description)
+- `habitsOccurrences` which holds information about when an habit was achieved (id, habitId, occurredAt, notes)
+
+Creation of database, tables and all CRUD operations are performed by using the SQlite module from ADO.NET.
+
+## Challenges
+
+- At the start finding how ADO.NET works was hard because the Microsoft documentation is really hard to understand for someone that had not worked with ADO.NET and they exist few videos about the topic, and the videos I could find were several years old and use .NET Framework instead of .NET. In the end the explanations on those resources still apply to how it works today.
+
+## Learnings
+
+- This is the first time I have written a program that handles database CRUD operations at SQL expressions level, which I find it useful to understand how other tools that abstract this logic work.
+- How to manipulate the Console so outputs look clean, this is a nice addition because I have never taken time to somethin like table formatting, console clearing, cursor position manipulation, this makes the app feel a lot better. 
