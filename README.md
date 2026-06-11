@@ -58,4 +58,4 @@ Creation of database, tables and all CRUD operations are performed by using the 
 ## Learnings
 
 - This is the first time I have written a program that handles database CRUD operations at SQL expressions level, which I find it useful to understand how other tools that abstract this logic work.
-- How to manipulate the Console so outputs look clean, this is a nice addition because I have never taken time to somethin like table formatting, console clearing, cursor position manipulation, this makes the app feel a lot better. 
+- How to manipulate the Console so outputs look clean, this is a nice addition because I have never taken time for things like table formatting and console clearing, this makes the app feel a lot better. 
